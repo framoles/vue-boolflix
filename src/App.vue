@@ -1,72 +1,57 @@
 <template>
   <div id="app">
-    <div class="input-group w-25">
-      <input
-        class="form-control"
-        type="text"
-        placeholder="Cerca"
-        v-model="query"
-      />
-      <button class="btn btn-primary" @click="doSearch">Cerca</button>
-    </div>
-    <button class="btn btn-primary" @click="(mode = 'movie'), doSearch">
-      FILM
-    </button>
-    <button class="btn btn-primary" @click="(mode = 'tv'), doSearch">
-      SERIE TV
-    </button>
-    <div class="row" v-if="mode == 'movie'">
-      <div class="col-5 card" v-for="film in list" :key="film.id">
-        <p>{{ film.title }}</p>
-        <p>{{ film.original_title }}</p>
-        <p>
-          {{ film.original_language }}
-        </p>
-        <p>{{ film.vote_average }}</p>
-      </div>
-    </div>
-    <div class="row" v-if="mode == 'tv'">
-      <div class="col-5 card" v-for="film in list" :key="film.id">
-        <p>{{ film.name }}</p>
-        <p>{{ film.original_name }}</p>
-        <p>
-          {{ film.original_language }}
-        </p>
-        <p>{{ film.vote_average }}</p>
-      </div>
-    </div>
+    <Header @input="doSearch" />
+    <Main :filmList="filmList" :serieList="serieList" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import Header from "./components/HeaderComponent.vue";
+import Main from "./components/MainComponent.vue";
 
 export default {
   name: "App",
-  components: {},
+  components: {
+    Header,
+    Main,
+  },
   data() {
     return {
       apiURL: "https://api.themoviedb.org/3/search/",
       apiKey: "5ec423d0e09c1c7875d6ca5bd8343d0a",
-      mode: "movie",
-      query: "",
-      list: [],
+      filmList: [],
+      serieList: [],
     };
   },
   methods: {
-    doSearch() {
+    doSearch(text) {
+      if (text.trim() != "") {
+        this.callAxios(text, "movie");
+        this.callAxios(text, "tv");
+      } else {
+        alert("nessun testo nella ricerca");
+      }
+    },
+
+    callAxios(query, mode) {
       const params = {
-        query: this.query,
+        query: query,
         api_key: this.apiKey,
         language: "it-IT",
       };
 
       axios
-        .get(this.apiURL + this.mode, { params })
+        .get(this.apiURL + mode, { params })
         .then((risp) => {
           if (risp.status === 200) {
-            this.list = risp.data.results;
-            console.log(this.list);
+            if (mode == "movie") {
+              this.filmList = risp.data.results;
+              console.log(this.filmList);
+            } else {
+              this.serieList = risp.data.results;
+              console.log(this.serieList);
+            }
           }
         })
         .catch((err) => console.log(err));
@@ -76,16 +61,10 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-  .card {
-    background-image: url("https://image.tmdb.org/t/p/w342/gcr6W7BNNh6XiJjeFdjV3NyeAcs.jpg");
-    background-repeat: no-repeat;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
 }
 </style>
