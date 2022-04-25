@@ -11,6 +11,7 @@ export default {
     cast: Object,
   },
   methods: {
+    //src dinamica img profilo attore
     getSrc(path) {
       if (path != null) {
         return `https://image.tmdb.org/t/p/original${path}`;

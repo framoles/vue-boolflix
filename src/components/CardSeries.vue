@@ -1,4 +1,5 @@
 <template>
+  <!-- Card immagine + info serie tv-->
   <div class="card" @click="cardIsClicked(card.id)">
     <div class="card-hover">
       {{ card.name }}
@@ -6,6 +7,7 @@
         {{ card.original_name }}
       </div>
       <lang-flag :iso="card.original_language" />
+      <!-- container del voto in stelle -->
       <div class="vote-container">
         <i
           class="fa-solid fa-star"
@@ -18,10 +20,13 @@
           :key="star + 'regular'"
         ></i>
       </div>
+      <!-- fine container del voto in stelle -->
+      <!-- descrizione serie tv -->
       {{ card.overview }}
     </div>
+    <!-- se clicco card mostra gli attori -->
     <div class="cast" v-if="cardClicked">
-      <CastCard v-for="(cast, index) in castList" :key="index" :cast="cast" />
+      <CastCard v-for="cast in castList" :key="cast.id" :cast="cast" />
     </div>
     <img :src="getUrl(card.poster_path)" :alt="card.title" />
   </div>
@@ -30,6 +35,7 @@
 <script>
 import axios from "axios";
 import CastCard from "./CastCard.vue";
+import { apiKey } from "../assets/file/api";
 
 export default {
   components: {
@@ -45,6 +51,7 @@ export default {
     };
   },
   methods: {
+    //calcolo src dinamica dell' immagine serie tv
     getUrl(path) {
       if (path != null) {
         return `https://image.tmdb.org/t/p/original${path}`;
@@ -52,12 +59,13 @@ export default {
         return "https://bit.ly/3rMN9Vs";
       }
     },
+    //funzione per chiamare le api del cast di attori
     cardIsClicked(id) {
       this.cardClicked = !this.cardClicked;
       if (id != undefined) {
         if (this.cardClicked) {
           const params = {
-            api_key: "5ec423d0e09c1c7875d6ca5bd8343d0a",
+            api_key: apiKey,
             language: "it-IT",
           };
           axios

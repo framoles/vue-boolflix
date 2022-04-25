@@ -9,6 +9,7 @@
 import axios from "axios";
 import Header from "./components/HeaderComponent.vue";
 import Main from "./components/MainComponent.vue";
+import { apiKey } from "./assets/file/api";
 
 export default {
   name: "App",
@@ -19,12 +20,12 @@ export default {
   data() {
     return {
       apiURL: "https://api.themoviedb.org/3/search/",
-      apiKey: "5ec423d0e09c1c7875d6ca5bd8343d0a",
       filmList: [],
       serieList: [],
     };
   },
   methods: {
+    //chiamata api dei film e delle serie tv tramite parametro inviato da inputbox in header
     doSearch(text) {
       if (text.trim() != "") {
         this.callAxios(text, "movie");
@@ -37,10 +38,11 @@ export default {
     callAxios(query, mode) {
       const params = {
         query: query,
-        api_key: this.apiKey,
+        api_key: apiKey,
         language: "it-IT",
       };
 
+      //metodo axios per chiamare api medianti certi parametri
       axios
         .get(this.apiURL + mode, { params })
         .then((risp) => {

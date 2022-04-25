@@ -1,5 +1,7 @@
 <template>
+  <!-- se clicco la card film mostra gli attori -->
   <div class="card" @click="cardIsClicked(card.id)">
+    <!-- info mostate solo se vado on hover sulla card -->
     <div class="card-hover">
       {{ card.title }}
       <div v-if="card.title != card.original_title">
@@ -21,7 +23,8 @@
       {{ card.overview }}
     </div>
     <div class="cast" v-if="cardClicked">
-      <CastCard v-for="(cast, index) in castList" :key="index" :cast="cast" />
+      <!-- componente che mostra gli attori -->
+      <CastCard v-for="cast in castList" :key="cast.id" :cast="cast" />
     </div>
     <img :src="getUrl(card.poster_path)" :alt="card.title" />
   </div>
@@ -30,6 +33,7 @@
 <script>
 import axios from "axios";
 import CastCard from "./CastCard.vue";
+import { apiKey } from "../assets/file/api";
 
 export default {
   components: {
@@ -45,6 +49,7 @@ export default {
     };
   },
   methods: {
+    //calcolo dinamico src immagine
     getUrl(path) {
       if (path != null) {
         return `https://image.tmdb.org/t/p/original${path}`;
@@ -52,12 +57,13 @@ export default {
         return "https://bit.ly/3rMN9Vs";
       }
     },
+    //chiamata api lista attori
     cardIsClicked(id) {
       this.cardClicked = !this.cardClicked;
       if (id != undefined) {
         if (this.cardClicked) {
           const params = {
-            api_key: "5ec423d0e09c1c7875d6ca5bd8343d0a",
+            api_key: apiKey,
             language: "it-IT",
           };
           axios

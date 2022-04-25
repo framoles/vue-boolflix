@@ -1,16 +1,14 @@
 <template>
   <main>
     <h1>FILM</h1>
+    <!-- stampa array dei film -->
     <div id="film">
-      <CardFilm v-for="(item, index) in filmList" :card="item" :key="index" />
+      <CardFilm v-for="film in filmList" :card="film" :key="film.id" />
     </div>
     <h1>SERIES</h1>
+    <!-- stampa array delle serie tv -->
     <div id="series">
-      <CardSeries
-        v-for="(item, index) in serieList"
-        :card="item"
-        :key="index"
-      />
+      <CardSeries v-for="serie in serieList" :card="serie" :key="serie.id" />
     </div>
   </main>
 </template>
